@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using back_stage_management.API.DAL;
 
 namespace back_stage_management.API
 {
@@ -31,6 +34,27 @@ namespace back_stage_management.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back_stage_management.API", Version = "v1" });
             });
+            services.AddDbContext<GoodsContext>(options =>
+                          options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddCors(options =>
+
+            {
+
+                options.AddPolicy("any", builder =>
+
+                {
+
+                    builder.AllowAnyOrigin() //允许任何来源的主机访问
+
+                    .AllowAnyMethod()
+
+                    .AllowAnyHeader();
+
+                    //.AllowCredentials();//指定处理cookie
+
+                });
+
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +75,7 @@ namespace back_stage_management.API
             {
                 endpoints.MapControllers();
             });
+            app.UseCors("any");
         }
     }
 }

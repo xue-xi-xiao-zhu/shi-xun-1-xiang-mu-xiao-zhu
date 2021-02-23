@@ -17,10 +17,12 @@ namespace back_stage_management.API
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+             Host.CreateDefaultBuilder(args).ConfigureLogging(LoggingBuilder => {
+                 LoggingBuilder.AddLog4Net();
+             })
+                 .ConfigureWebHostDefaults(webBuilder =>
+                 {
+                     webBuilder.UseStartup<Startup>();
+                 });
     }
 }
